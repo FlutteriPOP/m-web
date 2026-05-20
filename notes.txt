@@ -1,0 +1,29 @@
+src/
+├── app/
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── routes.tsx
+
+├── features/
+│   ├── canvas/
+│   │   ├── Scene.tsx
+│   │   ├── CameraRig.tsx
+│   │   └── DeviceModel.tsx
+│   │
+│   └── device/
+│       ├── device.config.ts
+│       ├── device.types.ts
+│       └── useDevice.ts
+
+├── shared/
+│   ├── ui/
+│   │   └── Sidebar.tsx
+│   ├── hooks/
+│   └── utils/
+
+├── assets/
+│   └── images/
+
+├── styles/
+│   ├── index.css
+│   └── App.css
