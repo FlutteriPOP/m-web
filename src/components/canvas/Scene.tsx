@@ -105,7 +105,11 @@ export function Scene({ state }: SceneProps) {
           <Preload all />
         </Suspense>
 
-        <CameraRig preset={state.cameraPreset} />
+        <CameraRig 
+          preset={state.cameraPreset}
+          activeTemplate={state.activeTemplate}
+          isGeneratingIntro={state.isGeneratingIntro}
+        />
       </Canvas>
     </div>
   );

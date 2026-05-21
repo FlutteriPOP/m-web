@@ -5,20 +5,13 @@ export function useVideoRecorder(deviceLabel: string) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
-  const toggleRecording = useCallback(() => {
+  const startRecording = useCallback((filenameSuffix: string = 'mockup') => {
     const canvas = document.querySelector('canvas');
-    if (!canvas) return;
-
-    if (isRecording) {
-      mediaRecorderRef.current?.stop();
-      setIsRecording(false);
-      return;
-    }
+    if (!canvas) return false;
 
     chunksRef.current = [];
     const stream = canvas.captureStream(30);
 
-    // Prefer MP4, fallback to WebM
     const mimeType = MediaRecorder.isTypeSupported('video/mp4')
       ? 'video/mp4'
       : 'video/webm';
@@ -35,7 +28,7 @@ export function useVideoRecorder(deviceLabel: string) {
       const blob = new Blob(chunksRef.current, { type: mimeType });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.download = `${deviceLabel.replace(/\s/g, '-')}-mockup.${ext}`;
+      link.download = `${deviceLabel.replace(/\s/g, '-')}-${filenameSuffix}.${ext}`;
       link.href = url;
       link.click();
       URL.revokeObjectURL(url);
@@ -43,7 +36,32 @@ export function useVideoRecorder(deviceLabel: string) {
 
     mr.start();
     setIsRecording(true);
-  }, [isRecording, deviceLabel]);
+    return true;
+  }, [deviceLabel]);
 
-  return { isRecording, toggleRecording };
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+  }, []);
+
+  const toggleRecording = useCallback(() => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  }, [isRecording, startRecording, stopRecording]);
+
+  const startTemplateRecording = useCallback((durationMs: number, templateName: string) => {
+    const started = startRecording(`intro-${templateName}`);
+    if (started) {
+      setTimeout(() => {
+        stopRecording();
+      }, durationMs);
+    }
+  }, [startRecording, stopRecording]);
+
+  return { isRecording, toggleRecording, startTemplateRecording };
 }

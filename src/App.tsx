@@ -18,12 +18,14 @@ const DEFAULT_STATE: AppState = {
   mediaFileName: null,
   bloomIntensity: 0.8,
   dofEnabled: false,
+  activeTemplate: 'none',
+  isGeneratingIntro: false,
 };
 
 export default function App() {
   const [state, setState] = useState<AppState>(DEFAULT_STATE);
   const currentDevice = DEVICES[state.deviceId];
-  const { isRecording, toggleRecording } = useVideoRecorder(currentDevice.label);
+  const { isRecording, toggleRecording, startTemplateRecording } = useVideoRecorder(currentDevice.label);
 
   // Cleanup media URL on unmount
   useEffect(() => {
@@ -64,6 +66,7 @@ export default function App() {
         setState={setState}
         onRecordToggle={toggleRecording}
         isRecording={isRecording}
+        startTemplateRecording={startTemplateRecording}
       />
 
       <div className="absolute bottom-4 right-5 text-[10px] text-white/16 font-medium select-none z-20">

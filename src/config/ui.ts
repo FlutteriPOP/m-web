@@ -45,3 +45,16 @@ export const CAMERA_PRESETS: {
   { key: 'top-tilt',  label: 'Top Tilt',  azimuth: 0,             polar: Math.PI / 4,    distance: 14   },
   { key: 'hero',      label: 'Hero',      azimuth:  Math.PI / 8,  polar: Math.PI / 2.8,  distance: 10.5 },
 ];
+
+// ─── Animation Templates ─────────────────────────────────────────────────────
+
+export const ANIMATION_TEMPLATES: {
+  key: import('../types').TemplatePreset;
+  label: string;
+  duration: number; // in seconds
+  description: string;
+}[] = [
+  { key: 'sweep', label: 'Cinematic Sweep', duration: 4, description: 'Sweeps from the side to the front, revealing the device.' },
+  { key: 'zoom', label: 'Zoom Reveal', duration: 3.5, description: 'Quickly zooms in from a distance into a tight hero shot.' },
+  { key: 'spin', label: '360° Spin', duration: 6, description: 'A smooth 360-degree orbit around the entire device.' },
+];

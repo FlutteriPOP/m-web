@@ -7,7 +7,7 @@ interface ScreenMediaProps {
 }
 
 export function ScreenMedia({ url, type }: ScreenMediaProps) {
-  const texture = type === 'video' ? useVideoTexture(url) : useTexture(url);
+  const texture = type === 'video' ? useVideoTexture(url, { loop: true, muted: true, autoplay: true }) : useTexture(url);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.wrapS = THREE.ClampToEdgeWrapping;
   texture.wrapT = THREE.ClampToEdgeWrapping;

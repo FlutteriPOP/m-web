@@ -15,6 +15,7 @@ export type DeviceId =
 export type BgPreset = 'dark' | 'midnight' | 'white' | 'gradient-blue' | 'gradient-purple' | 'transparent';
 export type EnvPreset = 'city' | 'studio' | 'sunset' | 'dawn' | 'night';
 export type CameraPreset = 'front' | 'iso-left' | 'iso-right' | 'top-tilt' | 'hero';
+export type TemplatePreset = 'sweep' | 'zoom' | 'spin' | 'none';
 
 /** Individual camera lens descriptor */
 export interface LensConfig {
@@ -79,4 +80,6 @@ export interface AppState {
   mediaFileName: string | null;
   bloomIntensity: number;
   dofEnabled: boolean;
+  activeTemplate: TemplatePreset;
+  isGeneratingIntro: boolean;
 }
