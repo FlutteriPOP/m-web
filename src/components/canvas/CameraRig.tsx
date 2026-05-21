@@ -2,17 +2,10 @@ import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import CameraControls from 'camera-controls';
 import * as THREE from 'three';
-import type { CameraPreset } from '../ui/Sidebar';
+import type { CameraPreset } from '../../types';
+import { CAMERA_PRESETS } from '../../config/ui';
 
 CameraControls.install({ THREE });
-
-const PRESET_POSITIONS: Record<CameraPreset, { azimuth: number; polar: number; distance: number }> = {
-  'front':     { azimuth: 0,              polar: Math.PI / 2,       distance: 10 },
-  'iso-left':  { azimuth: -Math.PI / 5,   polar: Math.PI / 2.5,     distance: 11 },
-  'iso-right': { azimuth: Math.PI / 5,    polar: Math.PI / 2.5,     distance: 11 },
-  'top-tilt':  { azimuth: 0,              polar: Math.PI / 4,       distance: 12 },
-  'hero':      { azimuth: Math.PI / 8,    polar: Math.PI / 2.8,     distance: 9.5 },
-};
 
 interface CameraRigProps {
   preset: CameraPreset;
@@ -22,23 +15,27 @@ export function CameraRig({ preset }: CameraRigProps) {
   const { gl, camera } = useThree();
   const controls = useRef<CameraControls | null>(null);
 
+  // Initialize camera controls
   useEffect(() => {
     if (!controls.current) {
       controls.current = new CameraControls(camera, gl.domElement);
       controls.current.minDistance = 5;
-      controls.current.maxDistance = 20;
+      controls.current.maxDistance = 22;
+      controls.current.smoothTime = 0.4;
+      controls.current.draggingSmoothTime = 0.25;
     }
   }, [camera, gl]);
 
-  // Animate to preset
+  // Animate to preset position
   useEffect(() => {
     if (!controls.current) return;
-    const { azimuth, polar, distance } = PRESET_POSITIONS[preset];
-    controls.current.rotateTo(azimuth, polar, true);
-    controls.current.dollyTo(distance, true);
+    const p = CAMERA_PRESETS.find(c => c.key === preset);
+    if (!p) return;
+    controls.current.rotateTo(p.azimuth, p.polar, true);
+    controls.current.dollyTo(p.distance, true);
   }, [preset]);
 
-  // Manual tick (CameraControls needs to be updated every frame)
+  // Frame-loop update
   useEffect(() => {
     const clock = new THREE.Clock();
     let raf: number;

@@ -4,15 +4,18 @@ import { Environment, ContactShadows, Preload } from '@react-three/drei';
 import { EffectComposer, Bloom, DepthOfField } from '@react-three/postprocessing';
 import { DeviceModel } from './DeviceModel';
 import { CameraRig } from './CameraRig';
-import { DEVICES } from '../../devices';
-import type { AppState, BgPreset } from '../ui/Sidebar';
+import { DEVICES } from '../../config/devices';
+import type { AppState, BgPreset } from '../../types';
 import * as THREE from 'three';
 
-interface SceneProps { state: AppState; }
+interface SceneProps {
+  state: AppState;
+}
 
 function getBgColor(bg: BgPreset): string {
   switch (bg) {
-    case 'white':           return '#ffffff';
+    case 'white':           return '#f5f5f5';
+    case 'midnight':        return '#0a0a14';
     case 'gradient-blue':   return '#0a1440';
     case 'gradient-purple': return '#100820';
     case 'transparent':     return '#00000000';
@@ -33,14 +36,14 @@ export function Scene({ state }: SceneProps) {
           preserveDrawingBuffer: true,
           alpha: state.bgPreset === 'transparent',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.1,
+          toneMappingExposure: 1.15,
           antialias: true,
         }}
         shadows
       >
         <color attach="background" args={[bgColor]} />
 
-        {/* Gradient-effect second light for gradient bg presets */}
+        {/* Colored accent lights for gradient backgrounds */}
         {state.bgPreset === 'gradient-blue' && (
           <pointLight position={[-6, 4, 4]} intensity={3} color="#4466ff" />
         )}
@@ -48,27 +51,28 @@ export function Scene({ state }: SceneProps) {
           <pointLight position={[6, 4, 4]} intensity={3} color="#8844ff" />
         )}
 
-        {/* Core Lighting */}
-        <ambientLight intensity={0.35} />
-        <directionalLight position={[8, 14, 6]} intensity={1.4} castShadow
-          shadow-mapSize-width={2048} shadow-mapSize-height={2048}
-          shadow-camera-near={0.5} shadow-camera-far={50}
-          shadow-camera-left={-10} shadow-camera-right={10}
-          shadow-camera-top={10} shadow-camera-bottom={-10}
+        {/* Core Lighting Rig */}
+        <ambientLight intensity={0.30} />
+        <directionalLight
+          position={[8, 14, 6]}
+          intensity={1.5}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-camera-near={0.5}
+          shadow-camera-far={50}
+          shadow-camera-left={-10}
+          shadow-camera-right={10}
+          shadow-camera-top={10}
+          shadow-camera-bottom={-10}
         />
-        <directionalLight position={[-5, -3, -4]} intensity={0.25} color="#6677cc" />
-        <pointLight position={[0, 10, 6]} intensity={0.5} />
+        <directionalLight position={[-5, -3, -4]} intensity={0.2} color="#6677cc" />
+        <pointLight position={[0, 10, 6]} intensity={0.4} />
+        {/* Rim light from behind for edge highlights */}
+        <pointLight position={[0, 0, -8]} intensity={0.3} color="#aabbff" />
 
         <Suspense fallback={null}>
-          <Environment
-            preset={
-              state.envPreset === 'studio' ? 'studio'
-              : state.envPreset === 'sunset' ? 'sunset'
-              : state.envPreset === 'dawn'   ? 'dawn'
-              : state.envPreset === 'night'  ? 'night'
-              : 'city'
-            }
-          />
+          <Environment preset={state.envPreset} />
 
           <DeviceModel
             device={device}
@@ -80,9 +84,9 @@ export function Scene({ state }: SceneProps) {
 
           <ContactShadows
             position={[0, -(device.height / 2 + 0.5), 0]}
-            opacity={state.bgPreset === 'white' ? 0.3 : 0.65}
+            opacity={state.bgPreset === 'white' ? 0.25 : 0.6}
             scale={20}
-            blur={3}
+            blur={2.5}
             far={device.height / 2 + 1}
           />
 

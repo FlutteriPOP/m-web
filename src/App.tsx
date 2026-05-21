@@ -1,12 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
-import { Sidebar, type AppState } from './components/ui/Sidebar';
+import { useState, useEffect } from 'react';
+import { Sidebar } from './components/ui/Sidebar';
 import { Scene } from './components/canvas/Scene';
-import { DEVICES, DEVICE_COLORS } from './devices';
-import { Download, Layers2 } from 'lucide-react';
+import { DEVICES } from './config/devices';
+import { useVideoRecorder } from './hooks/useVideoRecorder';
+import type { AppState } from './types';
+import { Layers2 } from 'lucide-react';
 
 const DEFAULT_STATE: AppState = {
   deviceId: 'iphone15pro',
-  frameColor: DEVICE_COLORS['iphone15pro'][0].hex,
+  frameColor: DEVICES['iphone15pro'].colors[0].hex,
   rotation: [0.1, -0.3, 0],
   bgPreset: 'dark',
   envPreset: 'city',
@@ -20,56 +22,17 @@ const DEFAULT_STATE: AppState = {
 
 export default function App() {
   const [state, setState] = useState<AppState>(DEFAULT_STATE);
-  const [isRecording, setIsRecording] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
+  const currentDevice = DEVICES[state.deviceId];
+  const { isRecording, toggleRecording } = useVideoRecorder(currentDevice.label);
 
+  // Cleanup media URL on unmount
   useEffect(() => {
     return () => { if (state.mediaUrl) URL.revokeObjectURL(state.mediaUrl); };
   }, [state.mediaUrl]);
 
-  const handleExportImage = () => {
-    const canvas = document.querySelector('canvas');
-    if (!canvas) return;
-    const link = document.createElement('a');
-    const device = DEVICES[state.deviceId];
-    link.download = `${device.label.replace(/\s/g, '-')}-mockup.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  };
-
-  const handleRecordToggle = () => {
-    const canvas = document.querySelector('canvas');
-    if (!canvas) return;
-    if (isRecording) {
-      mediaRecorderRef.current?.stop();
-      setIsRecording(false);
-      return;
-    }
-    chunksRef.current = [];
-    const stream = canvas.captureStream(30);
-    const mr = new MediaRecorder(stream, { mimeType: 'video/webm' });
-    mediaRecorderRef.current = mr;
-    mr.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-    mr.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      const device = DEVICES[state.deviceId];
-      link.download = `${device.label.replace(/\s/g, '-')}-mockup.webm`;
-      link.href = url;
-      link.click();
-      URL.revokeObjectURL(url);
-    };
-    mr.start();
-    setIsRecording(true);
-  };
-
-  const currentDevice = DEVICES[state.deviceId];
-
   return (
     <div className="relative w-full h-screen overflow-hidden" style={{ background: '#060912' }}>
-      {/* Top Bar */}
+      {/* ─── Top Bar ─── */}
       <header className="top-bar absolute top-0 left-0 right-0 h-12 z-30 flex items-center px-5 gap-3">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
@@ -91,11 +54,6 @@ export default function App() {
               <span className="w-1.5 h-1.5 rounded-full bg-red-400 recording-dot" /> Recording
             </div>
           )}
-          <button onClick={handleExportImage}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-white/7 hover:bg-white/14 border border-white/10 text-white/65 hover:text-white text-xs font-medium transition-all"
-          >
-            <Download size={12} /> Export
-          </button>
         </div>
       </header>
 
@@ -104,8 +62,7 @@ export default function App() {
       <Sidebar
         state={state}
         setState={setState}
-        onExportImage={handleExportImage}
-        onRecordToggle={handleRecordToggle}
+        onRecordToggle={toggleRecording}
         isRecording={isRecording}
       />
 

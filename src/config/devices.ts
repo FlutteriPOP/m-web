@@ -1,11 +1,12 @@
 import type { DeviceSpec, DeviceId } from '../types';
 
 // ─── Device Registry ─────────────────────────────────────────────────────────
-// Dimensions: 1 world-unit ≈ 10mm.  Heights/widths match actual device specs.
+// All dimensions in world-units (1 unit ≈ 10 mm, matching real device specs).
+// Each device includes full physical geometry + color palette.
 
 export const DEVICES: Record<DeviceId, DeviceSpec> = {
 
-  /* ── iPhone 15 ─────────────────────────────────────── */
+  /* ── iPhone 15 ──────────────────────────────────────────────────────────── */
   iphone15: {
     id: 'iphone15',
     label: 'iPhone 15',
@@ -32,8 +33,8 @@ export const DEVICES: Record<DeviceId, DeviceSpec> = {
     ],
   },
 
-  /* ── iPhone 15 Pro ─────────────────────────────────── */
-  'iphone15pro': {
+  /* ── iPhone 15 Pro ──────────────────────────────────────────────────────── */
+  iphone15pro: {
     id: 'iphone15pro',
     label: 'iPhone 15 Pro',
     brand: 'Apple',
@@ -59,7 +60,7 @@ export const DEVICES: Record<DeviceId, DeviceSpec> = {
     ],
   },
 
-  /* ── iPad Pro 11" ──────────────────────────────────── */
+  /* ── iPad Pro 11" ───────────────────────────────────────────────────────── */
   'ipad-pro': {
     id: 'ipad-pro',
     label: 'iPad Pro 11"',
@@ -82,7 +83,7 @@ export const DEVICES: Record<DeviceId, DeviceSpec> = {
     ],
   },
 
-  /* ── Samsung Galaxy S24 Ultra ──────────────────────── */
+  /* ── Samsung Galaxy S24 Ultra ───────────────────────────────────────────── */
   'galaxy-s24-ultra': {
     id: 'galaxy-s24-ultra',
     label: 'Galaxy S24 Ultra',
@@ -96,9 +97,9 @@ export const DEVICES: Record<DeviceId, DeviceSpec> = {
     cameraModuleW: 1.05, cameraModuleH: 1.55, cameraModuleCornerR: 0.18,
     cameraModuleOffsetX: 0.52, cameraModuleOffsetY: 0.88,
     lenses: [
-      { offsetX:  0.0,  offsetY:  0.44, radius: 0.14 },
-      { offsetX:  0.0,  offsetY:  0.10, radius: 0.18 },
-      { offsetX:  0.0,  offsetY: -0.30, radius: 0.14 },
+      { offsetX:  0.0, offsetY:  0.44, radius: 0.14 },
+      { offsetX:  0.0, offsetY:  0.10, radius: 0.18 },
+      { offsetX:  0.0, offsetY: -0.30, radius: 0.14 },
     ],
     defaultColor: '#1C1C1E',
     colors: [
@@ -110,7 +111,7 @@ export const DEVICES: Record<DeviceId, DeviceSpec> = {
     ],
   },
 
-  /* ── Google Pixel 8 Pro ─────────────────────────────── */
+  /* ── Google Pixel 8 Pro ─────────────────────────────────────────────────── */
   'pixel-8-pro': {
     id: 'pixel-8-pro',
     label: 'Pixel 8 Pro',
@@ -137,7 +138,7 @@ export const DEVICES: Record<DeviceId, DeviceSpec> = {
     ],
   },
 
-  /* ── Samsung Galaxy Tab S9 ─────────────────────────── */
+  /* ── Samsung Galaxy Tab S9 ──────────────────────────────────────────────── */
   'galaxy-tab-s9': {
     id: 'galaxy-tab-s9',
     label: 'Galaxy Tab S9',

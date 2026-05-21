@@ -1,8 +1,9 @@
-// ─── All shared TypeScript types and interfaces ───────────────────────────────
+// ─── Shared TypeScript types ──────────────────────────────────────────────────
 
 export type OS = 'ios' | 'android';
 export type NotchType = 'dynamic-island' | 'punch-hole' | 'none';
 export type FrameStyle = 'polished-aluminum' | 'titanium' | 'matte-glass';
+
 export type DeviceId =
   | 'iphone15'
   | 'iphone15pro'
@@ -15,14 +16,14 @@ export type BgPreset = 'dark' | 'midnight' | 'white' | 'gradient-blue' | 'gradie
 export type EnvPreset = 'city' | 'studio' | 'sunset' | 'dawn' | 'night';
 export type CameraPreset = 'front' | 'iso-left' | 'iso-right' | 'top-tilt' | 'hero';
 
-/** Camera lens descriptor */
+/** Individual camera lens descriptor */
 export interface LensConfig {
   offsetX: number;
   offsetY: number;
   radius: number;
 }
 
-/** Full device specification */
+/** Complete device specification */
 export interface DeviceSpec {
   id: DeviceId;
   label: string;
@@ -43,23 +44,29 @@ export interface DeviceSpec {
   notchWidth: number;
   notchHeight: number;
 
-  // Back camera
-  cameraBar: boolean;         // Pixel-style horizontal bar
+  // Back camera module
+  cameraBar: boolean;
   cameraBarWidth: number;
   cameraBarHeight: number;
   cameraModuleW: number;
   cameraModuleH: number;
   cameraModuleCornerR: number;
   cameraModuleOffsetX: number;
-  cameraModuleOffsetY: number; // from top-center of back face
+  cameraModuleOffsetY: number;
   lenses: LensConfig[];
 
   // Color palette
   defaultColor: string;
-  colors: { label: string; hex: string; roughness?: number }[];
+  colors: DeviceColor[];
 }
 
-/** Global app state */
+export interface DeviceColor {
+  label: string;
+  hex: string;
+  roughness?: number;
+}
+
+/** Global application state */
 export interface AppState {
   deviceId: DeviceId;
   frameColor: string;
